@@ -1,45 +1,41 @@
 package main
-
-
+ 
 import (
     . "fmt" // Using '.' to avoid prefixing functions with their package names
     . "runtime" // This is probably not a good idea for large projects...
-    . "time"
-    "sync"
 )
 
-type Counter struct {
-    mu sync.Mutex
-    i int64
-}
+var i = 0
 
-//var i = 0
 
-func (c *Counter) adder() {
+func adder(intChannel chan int, finChannel chan string) {
     for x := 0; x < 1000000; x++ {
-        c.mu.Lock()
-        c.i++
-        c.mu.Unlock()
+        i := <-intChannel
+        i++
+        intChannel <- i
     }
+    finChannel <- "Add Done"
 }
-func (c *Counter) subber() {
-    for x := 0; x < 1000000; x++ {
-        c.mu.Lock()
-        c.i--
-        c.mu.Unlock()
+func subber(intChannel chan int, finChannel chan string) {
+    for x := 0; x < 1000010; x++ {
+        i := <-intChannel
+        i--
+        intChannel <- i
     }
+    finChannel <- "Sub Done"
 }
-//func subber() {
-//    for x := 0; x < 1000000; x++ {
-//        i--
-//    }
-//}
 
 func main() {
     GOMAXPROCS(NumCPU()) // I guess this is a hint to what GOMAXPROCS does...
-    var views Counter
-    go adder() // This spawns adder() as a goroutine
-    go subber() // This spawns subber() as a goroutine
-    Sleep(100*Millisecond)
+    intChannel := make(chan int, 1)
+    intChannel <- i
+    finChannel := make(chan string,2)
+    go adder(intChannel, finChannel) // This spawns adder() as a goroutine
+    go subber(intChannel, finChannel) // This spawns subber() as a goroutine
+    s := <-finChannel
+    Println("Done", s)
+    p := <-finChannel
+    Println("Done", p)
+    i := <-intChannel
     Println("Done:", i);
 }
