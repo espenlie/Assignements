@@ -1,0 +1,19 @@
+First some theory. What is:
+
+-    An atomic operation?
+
+An operation during wich a processor can simultaneously read allocations and write it in the same
+operation. This prevents all other devices from writing and reading until it is complete.
+
+-    A semaphore?
+
+It is a variable or abstract data type that is used for controlling access by multiple processes to a
+common resource in a parallel program.
+
+-    A mutex?
+
+It gives exclusive access to a location to a process, and organize the queue.
+
+-    A critical section?
+
+It is a section that must not be concurrently accessed by more than one thread of execution.
