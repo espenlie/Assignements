@@ -1,0 +1,18 @@
+
+Why do we use concurrent execution (multithreading/multiprocessing, or the like)? List a fair few reasons.
+
+- So we can run parallel multiple threads in one process.
+- Make more use of todays multicore processor.
+
+
+
+-   How can adding more concurrent tasks make programming simpler? (Think about translation from idea to code...)
+
+
+- Accessing small I/O devices.
+- Serving multiple network clients.
+
+
+-   And how can it make programming more difficult? (Maybe come back to this after you have worked on part 4 of this exercise)
+
+
