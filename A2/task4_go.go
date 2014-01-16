@@ -10,17 +10,17 @@ var i = 0
 
 func adder(intChannel chan int, finChannel chan string) {
     for x := 0; x < 1000000; x++ {
-        i := <-intChannel
+        j := <-intChannel
         i++
-        intChannel <- i
+        intChannel <- j
     }
     finChannel <- "Add Done"
 }
 func subber(intChannel chan int, finChannel chan string) {
     for x := 0; x < 1000010; x++ {
-        i := <-intChannel
+        j := <-intChannel
         i--
-        intChannel <- i
+        intChannel <- j
     }
     finChannel <- "Sub Done"
 }
@@ -32,10 +32,7 @@ func main() {
     finChannel := make(chan string,2)
     go adder(intChannel, finChannel) // This spawns adder() as a goroutine
     go subber(intChannel, finChannel) // This spawns subber() as a goroutine
-    s := <-finChannel
-    Println("Done", s)
-    p := <-finChannel
-    Println("Done", p)
-    i := <-intChannel
-    Println("Done:", i);
+    Println(<-finChannel)
+    Println(<-finChannel)
+    Println(i);
 }
