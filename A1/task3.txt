@@ -46,7 +46,7 @@ Such that one thread would not take all the processor power.
 -    With this in mind: What is the workaround for the GIL (Hint: it's another module)? How do you then share resources (variables/data)?
     What does func GOMAXPROCS(n int) int change?
 
-Use the module multiprocessing. Can use a Queue to sharem resources.
+Use the module multiprocessing. Can use a Queue to share resources.
 GOMAXPROCS(n int) limits the number of operating system threads that can execute user
 level go code simultaneously.
     
