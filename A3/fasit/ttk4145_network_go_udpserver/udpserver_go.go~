@@ -1,0 +1,97 @@
+package main
+
+import (
+
+    . "runtime"
+    ."fmt"
+    ."net"
+    "strconv"
+)
+
+var bcast = "129.241.187.255"
+
+//////////////////////////////
+// MODIFY THIS
+var localIP = "129.241.187.161"
+
+func main(){
+    GOMAXPROCS(NumCPU())
+    Println("Hello")
+    
+    for i:=20000; i<20021; i++ {
+        echoInit(strconv.Itoa(i))
+    }
+    
+    neverQuit := make(chan string)    
+    <-neverQuit // haha, very funny
+}
+
+func echoInit(port string){
+    Println("Creating UDP echo for port", port)
+    msgRedirect := make(chan string)
+    go echoReader(port, msgRedirect)
+    go echoWriter(port, msgRedirect)
+}
+
+func echoReader(port string, msgRedirect chan<- string){
+    service := bcast + ":" + port
+    addr, err := ResolveUDPAddr("udp4", service)
+    if err != nil { Println(err) }
+    sock, err := ListenUDP("udp4", addr)
+    if err != nil { Println(err) }
+    
+    var buff [1024]byte
+    
+    for {
+        buff = *new([1024]byte) // no buff.clear ?
+        _, remoteAddr, err := sock.ReadFromUDP(buff[0:])
+        if err != nil { Println(err) }
+        if localIP != remoteAddr.IP.String() {
+            Println("Received", string(buff[0:]))
+            msgRedirect <- string(buff[0:])
+        }
+    }
+}
+
+
+func echoWriter(port string, msgRedirect <-chan string){
+	service := bcast + ":" + port
+	addr, err := ResolveUDPAddr("udp4", service)
+    if err != nil { Println(err) }
+	sock, err := DialUDP("udp4", nil, addr)
+    if err != nil { Println(err) }
+	for {
+	    msg := <- msgRedirect
+	    Println("Echoing:", msg)
+		_, err := sock.Write(append([]byte("You said: "), []byte(msg)...))
+        if err != nil { Println("echoWriter send: ", err) }
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
