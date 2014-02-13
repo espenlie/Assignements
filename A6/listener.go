@@ -15,7 +15,7 @@ func receiver(connection Conn, received chan string,status chan string){
         _, err := connection.Read(buf[0:])
         if err != nil {
             status <- "YO"
-            Println(err)
+            //Println(err)
             return
         }
         received <- Split(string(buf[0:]), "EOL")[0]
@@ -27,7 +27,7 @@ func listener(conn *TCPListener, newConn_c chan Conn){
     for {
         newConn, err := conn.Accept()
         if err != nil {
-            Println(err)
+            //Println(err)
         }
         newConn_c <- newConn
     }
@@ -56,23 +56,23 @@ func main(){
             cmd := exec.Command("mate-terminal","-x", "go", "run", "/home/student/LL/Assignements/A6/listener.go")
             err2 := cmd.Run()
             if err2 != nil {
-                Println(err2)
+                //Println(err2)
             }
             time.Sleep(1000 * time.Millisecond)
             initConn, err := Dial("tcp", "localhost:6969")
             if err != nil {
-                Println(err)
+                //Println(err)
             }
             var sendMessage string
             for {
-                    sendMessage=strconv.Itoa(counter)+"EOL"
-                    initConn.Write(append([]byte(sendMessage), []byte{0}...))
                     counter=counter+1
-                    Println(strconv.Itoa(counter))
+                    sendMessage=strconv.Itoa(counter)+"EOL"
+                    //Println(strconv.Itoa(counter))
+                    initConn.Write(append([]byte(sendMessage), []byte{0}...))
                     time.Sleep(1000 * time.Millisecond)
             }
         case msg := <-receivedMsgs_c:
-            Println("   Main received: ", msg, " (end)")
+            Println(msg)
             counter, _ = strconv.Atoi(msg)
         case newConn := <-newConn_c:
             connMap[newConn.LocalAddr().String()] = newConn
